@@ -1,14 +1,21 @@
 package assignment2;
 
 import basicdatastructures.queue.*;
+import basicdatastructures.stack.Stack;
+import basicdatastructures.stack.StackLinkedListBased;
 
 public class MyQueueOperations {
 	/**
 	 * Returns the number of elements in q.
 	 */
 	public static <T> int size(Queue<T> q) {
-		// TODO implement me
-		return -1;
+		int count = 0;
+		Queue<T> temp = clone(q); //to preserve orig queue
+        while (!temp.isEmpty()) {
+            temp.dequeue();
+            count++;
+        }
+        return count;
 	}
 
 	/**
@@ -17,15 +24,33 @@ public class MyQueueOperations {
 	 * QueueArrayBased or QueueLinkedListBased, up to you.
 	 */
 	public static <T> Queue<T> clone(Queue<T> orig) {
-		// TODO implement me
-		return null;
+		Queue<T> result = new QueueLinkedListBased<>();
+		Queue<T> temp = new QueueLinkedListBased<>();
+
+		while (!orig.isEmpty()) {
+			T element = orig.dequeue();
+			temp.enqueue(element);
+			result.enqueue(element);
+		}
+
+		while (!temp.isEmpty()) {
+			orig.enqueue(temp.dequeue());
+		}
+
+		return result;
 	}
 
 	/**
 	 * Reverses the order of the elements in q.
 	 */
 	public static <T> void reverse(Queue<T> q) {
-		// TODO implement me
+		Stack<T> stack = new StackLinkedListBased<>();
+		while (!q.isEmpty()){
+			stack.push(q.dequeue());
+		}
+		while (!stack.isEmpty()){
+			q.enqueue(stack.pop());
+		}
 	}
 
 	/**
@@ -33,7 +58,20 @@ public class MyQueueOperations {
 	 * the queues are compared using == operator.
 	 */
 	public static <T> boolean areEqual(Queue<T> q1, Queue<T> q2) {
-		// TODO implement me
-		return false;
+		if (size(q1) != size(q2)) {
+			return false;
+		}
+
+		Queue<T> temp1 = clone(q1);
+		Queue<T> temp2 = clone(q2);
+
+		while (!temp1.isEmpty() && !temp2.isEmpty()) {
+			T element1 = temp1.dequeue();
+			T element2 = temp2.dequeue();
+			if (element1 != element2) {
+				return false;
+			}
+		}
+		return temp1.isEmpty() && temp2.isEmpty();
 	}
 }
